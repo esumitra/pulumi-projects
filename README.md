@@ -11,6 +11,8 @@ The IAC projects available are
 | ------------- | ------------- |
 | s3-static-website  | A simple static website on S3  |
 | ec2-with-ssh  | An EC2 instance with ssh access  |
+| 2-node-k8s| A Kubernetes cluster with two nodes |
+
 
 ## Setup
 Before running the projects, you need to have an AWS account setup. Then define the following environment variables. Have fun!
