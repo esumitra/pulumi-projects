@@ -1,0 +1,3 @@
+name: ec2-with-ssm
+runtime: nodejs
+description: A pulumi project for creating an EC2 instance with SSM support
