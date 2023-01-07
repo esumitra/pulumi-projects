@@ -1,13 +1,20 @@
+import { Config } from "@pulumi/pulumi";
+
 export type SiteConfig = {
   bucketName: string,
-  srcFile: string,
   srcFolder: string,
   indexDocument: string
 };
 
-export const siteConfig: SiteConfig = {
-  bucketName: "static-website-1",
-  srcFile: "./dist/index.html",
-  srcFolder: "./dist",
-  indexDocument: "index.html"
-}
+const siteConfigKey: string = "siteConfig";
+
+const config = new Config();
+
+export const siteConfig: SiteConfig = config.requireObject<SiteConfig>(siteConfigKey);
+
+// sample configuration object
+// export const siteConfig: SiteConfig = {
+//   bucketName: "static-website-1",
+//   srcFolder: "./dist",
+//   indexDocument: "index.html"
+// }

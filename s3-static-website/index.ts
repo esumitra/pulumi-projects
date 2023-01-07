@@ -23,7 +23,7 @@ function copyFolderToS3Website(srcFolder: string, bucket: aws.s3.Bucket, prefix:
     if (fs.lstatSync(fullPath).isDirectory()) {
       copyFolderToS3Website(fullPath, bucket, `${targetFile}/`);
     } else {
-      console.log(`creating: (${fullPath}, ${targetFile})`)
+      // console.log(`creating: (${fullPath}, ${targetFile})`)
       new aws.s3.BucketObject(targetFile, {
         acl: "public-read",
         contentType: "text/html",

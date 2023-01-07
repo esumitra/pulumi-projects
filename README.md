@@ -16,7 +16,34 @@ The IAC projects available are
 
 ## Setup
 Before running the projects, you need to have an AWS account setup. Then define the following environment variables. Have fun!
+
+1. Setup with AWS environment variables
 ```
 export AWS_ACCESS_KEY_ID=<YOUR_ACCESS_KEY_ID>
 export AWS_SECRET_ACCESS_KEY=<YOUR_SECRET_ACCESS_KEY>
+export AWS_REGION=<YOUR_REGION> e.g., us-east-1
+```
+
+2. Setup with AWS profiles
+If you are using multiple AWS profiles defined in the ~/.aws/credentials file, you can use
+
+```
+export AWS_PROFILE=<PROFILE_TO_USE> e.g., esumitra-personal
+```
+
+Sample `~/.aws/credentials`:
+
+```
+[default]
+aws_access_key_id=xxx1
+aws_secret_access_key=xxx2
+region=us-east-1
+
+[esumitra-personal]
+aws_access_key_id=yyy1
+aws_secret_access_key=yyy2
+region=us-east-1
+
+[esumitra-teaching]
+...
 ```
