@@ -1,2 +1,6 @@
 config:
   aws:region: us-east-1
+  s3-static-website:siteConfig:
+    bucketName: static-website-1
+    indexDocument: index.html
+    srcFolder: /www/public
