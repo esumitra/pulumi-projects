@@ -1,2 +1,12 @@
 config:
   aws:region: us-east-1
+  ec2-with-ssm:ec2Config:
+    amiId: ami-033f230e26210618e
+    instanceSize: 't2.micro'
+    instanceName: simple-ec2-B
+    securityGroupName: 'basic-ec2'
+    keyPair:
+      name: 'ec2-ssh-key'
+      publicKey: 'ssh-rsa abunchofcharacters user@org'
+  
+

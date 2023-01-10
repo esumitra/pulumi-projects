@@ -1,31 +1,28 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
+import { ec2Config} from "./config"
 
-// specify AMI properties
-const amiName:string = "amzn2-ami-hvm-*-x86_64-ebs";
-const size = "t2.micro";     // t2.micro is available in the AWS free tier
+function createSecurityGroup(secGroupName: string,  openPorts: number[] = []): aws.ec2.SecurityGroup {
+  const sshPort = [22];
+  const ingressPorts = [...sshPort, ...openPorts];
+  const ingressEntries = ingressPorts.map (p => ({
+    protocol: "tcp", fromPort: p, toPort: p, cidrBlocks: ["0.0.0.0/0"]
+  }));
+  return new aws.ec2.SecurityGroup(secGroupName, {
+    ingress: ingressEntries,
+    egress: [{ protocol: "-1", fromPort: 0, toPort: 0, cidrBlocks: ["0.0.0.0/0"] }],
+  });
+};
 
-// create AMI instance
-const ami = aws.ec2.getAmiOutput({
-  filters: [{
-      name: "name",
-      values: [amiName],
-  }],
-  owners: ["137112412989"], // This owner ID is Amazon
-  mostRecent: true,
-});
-
-// create security group
-const securityGroup = new aws.ec2.SecurityGroup("webserver-secgrp", {
-  ingress: [
-      { protocol: "tcp", fromPort: 22, toPort: 22, cidrBlocks: ["0.0.0.0/0"] },
-  ],
-});
-
+function createUpdateKeypair(keyName: string, publicKey: string): aws.ec2.KeyPair {
+  return new aws.ec2.KeyPair(keyName, {
+    publicKey: publicKey
+  });
+}
 
 // create user data to install SSM
-const userData:string = `#!/bin/bash
+const ssmUserData:string = `#!/bin/bash
 set -ex
 
 cd /tmp
@@ -35,18 +32,24 @@ sudo systemctl start amazon-ssm-agent
 `;
 
 // create an instance with AMI and security group
-const server = new aws.ec2.Instance("webserver-www", {
-  instanceType: size,
-  vpcSecurityGroupIds: [ securityGroup.id ], // reference the security group resource above
-  ami: ami.id,
-  keyName: "k8-servers",
-  // userData: userData
-});
+function createInstance(amiId: string, instanceName: string, instanceSize: string, securityGroup: aws.ec2.SecurityGroup, keyPair: aws.ec2.KeyPair) {
+  return new aws.ec2.Instance(instanceName, {
+    instanceType: instanceSize,
+    vpcSecurityGroupIds: [ securityGroup.id ], // reference the security group resource above
+    ami: amiId,
+    keyName: keyPair.keyName,
+    userData: ssmUserData
+  });
+};
 
-const successMessage = 'connect to the instance using the command: ssh -i  <key-pair.pem> ec2-user@$(pulumi stack output publicHostName)';
-console.log(successMessage);
+const secGroup = createSecurityGroup(ec2Config.securityGroupName);
+const keyPair: aws.ec2.KeyPair = createUpdateKeypair(ec2Config.keyPair.name, ec2Config.keyPair.publicKey);
+const server = createInstance(ec2Config.amiId, ec2Config.instanceName, ec2Config.instanceSize, secGroup, keyPair);
+
+
 
 // export instance details
-export const publicIp = server.publicIp;
-export const publicHostName = server.publicDns;
-export const instanceId = server.id;
+export const publicIp = pulumi.interpolate`server ip: ${server.publicIp}`;
+export const publicHostName = pulumi.interpolate`server hostname: ${server.publicDns}`;
+export const instanceId = pulumi.interpolate`server id: ${server.id}`;
+
