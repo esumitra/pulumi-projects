@@ -1,0 +1,28 @@
+# sample Java runtime with local file package
+# config:
+#   aws:region: us-east-1
+#   aws-s3-lambda:lambdaConfig:
+#     name: 'pulumi-pong'
+#     runtime: 'java11'
+#     handler: 'com.example.lambda.PingPongHandler::handle'
+#     logGroup: lambdaLogs
+#     timeout: 180 # 3 minutes
+#     lambdaPackage:
+#       type: 'localSource'
+#       localZipFile: '/Users/ESumitra/workspaces/scala/scala-lambda1/target/scala-2.12/scala-lambda1.jar'
+
+# sample Java runtime with s3 file package
+config:
+  aws:region: us-east-1
+  aws-s3-lambda:lambdaConfig:
+    name: 'pulumi-pong'
+    runtime: 'java11'
+    handler: 'com.example.lambda.PingPongHandler::handle'
+    logGroup: lambdaLogs
+    timeout: 180 # 3 minutes
+    lambdaPackage:
+      type: 's3Source'
+      s3ZipFile:
+        bucketName: 'es-lambda-jars'
+        path: 'ping-pong/scala-lambda1.jar'
+        localZipFile: '/Users/ESumitra/workspaces/scala/scala-lambda1/target/scala-2.12/scala-lambda1.jar'
