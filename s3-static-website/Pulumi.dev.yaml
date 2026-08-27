@@ -3,4 +3,4 @@ config:
   s3-static-website:siteConfig:
     bucketName: static-website-1
     indexDocument: index.html
-    srcFolder: /www/public
+    srcFolder: ./dist

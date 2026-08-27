@@ -2,11 +2,12 @@
     "name": "s3-static-website",
     "main": "index.ts",
     "devDependencies": {
-        "@types/node": "^14"
+        "@types/node": "^18",
+        "typescript": "^5.0.0"
     },
     "dependencies": {
-        "@pulumi/pulumi": "^3.0.0",
-        "@pulumi/aws": "^5.0.0",
-        "@pulumi/awsx": "^0.40.0"
+        "@pulumi/pulumi": "^3.113.0",
+        "@pulumi/aws": "^7.0.0",
+        "@pulumi/awsx": "^3.0.0"
     }
 }
